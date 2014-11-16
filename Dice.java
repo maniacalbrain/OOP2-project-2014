@@ -6,7 +6,5 @@ public class Dice {
 	public int getRoll(){
 		Random roll = new Random();
 		return roll.nextInt(6)+1;
-	}    
-    
-    
+	}       
 }
