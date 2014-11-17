@@ -1,4 +1,8 @@
 public class CrapsGame extends Dice{
+	Dice d1 = new Dice();
+	Dice d2 = new Dice();
+	int currd1;
+	int currd2;
 
     public CrapsGame() {
     	System.out.println("Starting Game!");
@@ -35,6 +39,19 @@ public class CrapsGame extends Dice{
       		}while(playGame == true);
       	}
     
+    }
+    public int getD1(){
+    	currd1 = d1.getRoll();
+    	return currd1;
+    }
+    
+    public int getD2(){
+    	currd2 = d2.getRoll();
+    	return currd2;
+    }
+    
+    public int getTotalRoll(){
+    	return currd1+currd2;
     }
     //craps -  2, 3, 12 - pass line looses - don't pass win (don't pass are pushed on a 12)
     //natural - 7, 11 - pass line wins automaticlly, 
