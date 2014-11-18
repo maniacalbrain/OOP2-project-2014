@@ -1,45 +1,78 @@
-public class CrapsGame extends Dice{
-	Dice d1 = new Dice();
-	Dice d2 = new Dice();
+import javax.swing.*;
+
+public class CrapsGame extends JPanel{
+	Dice d1;
+	Dice d2;
 	int currd1;
 	int currd2;
+	int point;
+	boolean push;
 
     public CrapsGame() {
-    	System.out.println("Starting Game!");
-    	Dice d1 = new Dice();
-    	Dice d2 = new Dice();
-    	int roll1 = d1.getRoll();
-    	int roll2 = d2.getRoll();
-    	int total = roll1 + roll2;
-    	System.out.println("You rolled: " + roll1 + " " + roll2 + "= " + total);
-    	if(total == 2 || total == 3 || total == 12){
-    		System.out.println("Craps!!! You lose!");
-    	}else if(total == 7 || total == 11){
-    		System.out.println("Natural!!! You win!");
-      	}else{
-      		int point = total;
-      		boolean playGame = true;
-      		System.out.println("Point is: "+ total);
-      		do{
-      			int nextd1 = d1.getRoll();
-      			int nextd2 = d2.getRoll();
-      			int nextRoll = nextd1+nextd2;
-      			System.out.println("You rolled: " + nextd1 + " " + nextd2 + "= " + nextRoll);
-      			if(nextRoll == point){
-      				System.out.println("You win!");
-      				playGame = false;
-      			}else if(nextRoll == 7){
-      				System.out.println("You loss!");
-      				playGame = false;
-      			}else{
-      				System.out.println("Try again");
-      				playGame = true;
-      			}
-      			
-      		}while(playGame == true);
-      	}
-    
+    	JPanel crapsPane = new JPanel();    	
+    	//Dice d1 = new Dice();
+		//Dice d2 = new Dice();
+		//push = false;
+		//point = 0;     
     }
+    public void takeBets(){
+    	//take bets
+    	//makePoint();
+    }    
+    
+    public void makePoint(){
+    	System.out.println("Rolling for point");
+    	System.out.println("You rolled: " + getD1() + " " + getD2() +" = " + getTotalRoll());
+    	switch(getTotalRoll()){
+    		case 2:
+    		case 3:
+    			//Craps, You lose, don't point wins
+    			//public void lose(bool push)
+    			break;
+    		case 12:
+    			//Craps, You lose, don't point is pushed
+    			break;
+    		case 7:
+    		case 11:
+    			//Naturual, You win
+    			break;
+    		default:
+    			//point is established
+    			//call playPoint()
+    			break;    				
+    	}
+    }
+    
+    public void playPoint(){
+    	boolean playGame = true;
+    	do{
+    		//roll for point
+    		//if roll is equal to point - playGame = false - call pointWins()
+    		//else if roll is equal to 7 point loses - playGame = false - call pointLoses()
+    		//else do nothing(play again)
+    	}while(playGame = true);
+    } 
+    	
+    public void pointLoses(){
+    	//if push is true
+    	//point loses, don't point is pushed
+    	//else
+    	//point loses, don't point wins
+    	
+    	//game ends - gameOver()
+    }
+    
+    public void pointWins(){ 
+    	//point wins, don't point loses
+    	
+    	//game ends - gameOver()    	
+    }
+    
+    public void gameOver(){
+    	//ask if player wants to play again
+    	//call takeBets()
+    }
+    
     public int getD1(){
     	currd1 = d1.getRoll();
     	return currd1;
@@ -52,17 +85,5 @@ public class CrapsGame extends Dice{
     
     public int getTotalRoll(){
     	return currd1+currd2;
-    }
-    //craps -  2, 3, 12 - pass line looses - don't pass win (don't pass are pushed on a 12)
-    //natural - 7, 11 - pass line wins automaticlly, 
-    //point - 4, 5, 6, 8, 9, 10 establishes point
-    
-    //take bets on pass and don't pass
-    //roll = get rolls
-    //if craps end turn
-    //if natural win
-    //if point - roll = point
-    //keep rolling until point is equalled (pass wins) or 7 (pass looses)
-    
-    
+    } 
 }
