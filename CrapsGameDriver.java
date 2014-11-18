@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import java.awt.*;
 
 
@@ -17,7 +18,7 @@ public class CrapsGameDriver extends JFrame{
 	
 	public CrapsGameDriver(){
 		setTitle("Craps Game");
-		setSize(200, 200);
+		setSize(300, 200);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		Container cont = getContentPane();

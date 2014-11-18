@@ -1,48 +1,58 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
 public class CrapsGame extends JPanel{
 	Dice d1;
 	Dice d2;
+	
 	int currd1;
 	int currd2;
+	
+	float pointBet;
+	float dontpointBet;
+	
 	int point;
 	boolean push;
-	int money;
-	JLabel moneyLabel;
-	JTextField betPoint;
-	JTextField betDontPoint;
+	float money;
+	JLabel lbl_money;
+	JTextField txtfld_betPoint;
+	JTextField txtfld_betDontPoint;
 	JButton rollPoint;
+	
+	String message;
 
     public CrapsGame() {
-    	JPanel crapsPane = new JPanel(new GridLayout(0,2));
+    	JPanel crapsPane = new JPanel(new GridLayout(0,2)); //TODO Sort out layout!!
     	
     	money = 100;
-    	moneyLabel = new JLabel(""+money);
-    	crapsPane.add(moneyLabel);
+    	lbl_money = new JLabel(""+money);
+    	crapsPane.add(lbl_money);
     	
-    	betPoint = new JTextField(5);
-    	crapsPane.add(betPoint);
+    	txtfld_betPoint = new JTextField(5);
+    	crapsPane.add(txtfld_betPoint);
     	
-    	betDontPoint = new JTextField(5);
-    	crapsPane.add(betDontPoint);
+    	txtfld_betDontPoint = new JTextField("Don't Point", 5);
+    	crapsPane.add(txtfld_betDontPoint);
     	
     	rollPoint = new JButton("Roll for Point");
-    	//add actionListener
+    	rollPoint.addActionListener(new ActionListener(){
+    		public void actionPerformed(ActionEvent e){
+    			takeBets();
+    		}
+    	});
     	crapsPane.add(rollPoint);
     	
-    	add(crapsPane);
-    	
-    	
-    	//Dice d1 = new Dice();
-		//Dice d2 = new Dice();
-		//push = false;
-		//point = 0;     
+    	add(crapsPane);    	     
     }
+    
     public void takeBets(){
-    	//take bets
+    	pointBet = Float.parseFloat(txtfld_betPoint.getText()); //TODO Validate!
+    	money -= pointBet;
+    	lbl_money.setText("" + money);
     	//makePoint();
+    	
     }    
     
     public void makePoint(){
@@ -63,6 +73,7 @@ public class CrapsGame extends JPanel{
     			break;
     		default:
     			//point is established
+    			//display message that point is established
     			//call playPoint()
     			break;    				
     	}
