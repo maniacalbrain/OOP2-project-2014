@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class CrapsGame extends JPanel{
 	Dice d1;
@@ -7,9 +9,32 @@ public class CrapsGame extends JPanel{
 	int currd2;
 	int point;
 	boolean push;
+	int money;
+	JLabel moneyLabel;
+	JTextField betPoint;
+	JTextField betDontPoint;
+	JButton rollPoint;
 
     public CrapsGame() {
-    	JPanel crapsPane = new JPanel();    	
+    	JPanel crapsPane = new JPanel(new GridLayout(0,2));
+    	
+    	money = 100;
+    	moneyLabel = new JLabel(""+money);
+    	crapsPane.add(moneyLabel);
+    	
+    	betPoint = new JTextField(5);
+    	crapsPane.add(betPoint);
+    	
+    	betDontPoint = new JTextField(5);
+    	crapsPane.add(betDontPoint);
+    	
+    	rollPoint = new JButton("Roll for Point");
+    	//add actionListener
+    	crapsPane.add(rollPoint);
+    	
+    	add(crapsPane);
+    	
+    	
     	//Dice d1 = new Dice();
 		//Dice d2 = new Dice();
 		//push = false;
