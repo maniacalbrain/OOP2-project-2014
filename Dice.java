@@ -3,8 +3,14 @@ import java.util.Random;
 
 public class Dice {	
 	
-	public int getRoll(){
+	private int value;
+	
+	public void rollDice(){
 		Random roll = new Random();
-		return roll.nextInt(6)+1;
-	}       
+		this.value = roll.nextInt(6)+1;
+	}
+	
+	public int getRoll() {
+		return value;
+	}     
 }

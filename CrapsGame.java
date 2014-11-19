@@ -10,10 +10,11 @@ public class CrapsGame extends JPanel{
 	int currd1;
 	int currd2;
 	
-	float pointBet;
-	float dontpointBet;
+	float pointBet;				//Bets on point
+	float dontpointBet;			//Bets on don't point
+	float house;				//Casino's earnings on player loses
 	
-	int point;
+	int point;					//current point
 	boolean push;
 	float money;
 	JLabel lbl_money;
@@ -24,8 +25,11 @@ public class CrapsGame extends JPanel{
 	String message;
 
     public CrapsGame() {
+    	d1 = new Dice();
+    	d2 = new Dice();
     	JPanel crapsPane = new JPanel(new GridLayout(0,2)); //TODO Sort out layout!!
     	
+    	//TODO add label next to money which flashes up how much money is added/subtracted?
     	money = 100;
     	lbl_money = new JLabel(""+money);
     	crapsPane.add(lbl_money);
@@ -48,33 +52,92 @@ public class CrapsGame extends JPanel{
     }
     
     public void takeBets(){
-    	pointBet = Float.parseFloat(txtfld_betPoint.getText()); //TODO Validate!
-    	money -= pointBet;
-    	lbl_money.setText("" + money);
-    	//makePoint();
+    	pointBet = 0;
+    	dontpointBet = 0;
     	
+    	//if both fields are empty
+    	if(txtfld_betPoint.getText().length() != 0 & txtfld_betDontPoint.getText().length() !=0){
+    		JOptionPane.showMessageDialog(null, "You can not bet on both point and don't point!");
+    		txtfld_betPoint.setText("");
+    		txtfld_betDontPoint.setText("");
+    	}
+    	//if both fields are 0
+    	else if(txtfld_betPoint.getText() == "0" && txtfld_betDontPoint.getText() == "0"){
+    		JOptionPane.showMessageDialog(null, "You must place a bet greater than 0 on point or don't point to play");
+    	}
+    	
+    	//if betPoint contains a value and betdontPoint is empty or 0
+    	else if(txtfld_betPoint.getText().length() != 0 && (txtfld_betDontPoint.getText().length() == 0 || txtfld_betDontPoint.getText() =="0")){
+    		try{
+    			pointBet = Float.parseFloat(txtfld_betPoint.getText()); //
+    		}catch(NumberFormatException nfe){
+    			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
+    			txtfld_betPoint.setText("");
+    		}
+    		if(pointBet <0){
+    			JOptionPane.showMessageDialog(null, "Negative numbers are not allowed");
+    			txtfld_betPoint.setText("");
+    		}
+    		else{
+    			money -= pointBet;
+    			lbl_money.setText("" + money);
+    			makePoint();
+    		}
+    	}
+    	//if betdontPoint contains a value and betPoint is empty or 0
+    	else if(txtfld_betDontPoint.getText().length() != 0 && (txtfld_betPoint.getText().length() == 0 || txtfld_betPoint.getText() == "0")){    		
+    		try{
+    			dontpointBet = Float.parseFloat(txtfld_betDontPoint.getText()); //    			
+    		}catch(NumberFormatException nfe){
+    			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
+    			txtfld_betDontPoint.setText("");
+    		}
+    		if(dontpointBet <0){
+    			JOptionPane.showMessageDialog(null, "Negative numbers are not allowed");
+    			txtfld_betDontPoint.setText("");
+    		}
+    		else{
+    			money -= dontpointBet;
+    			lbl_money.setText("" + money);
+    			makePoint();
+    		}
+    	}
+    	
+    	//else something I didn't plan for went wrong!
+    	else{
+    		JOptionPane.showMessageDialog(null, "Something I didn't plan for went wrong!");
+    	}
     }    
     
     public void makePoint(){
-    	System.out.println("Rolling for point");
-    	System.out.println("You rolled: " + getD1() + " " + getD2() +" = " + getTotalRoll());
+    	JOptionPane.showMessageDialog(null, "Rolling for point");
+    	//TODO add images of dice and message in following showMessageDialog to a panel, add panel to JOptionPane
+    	JOptionPane.showMessageDialog(null, "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll());
     	switch(getTotalRoll()){
     		case 2:
     		case 3:
     			//Craps, You lose, don't point wins
-    			//public void lose(bool push)
+    			JOptionPane.showMessageDialog(null, "Craps, point loses!");
+    			push = false; //don't point wins 
+    			pointLoses();
     			break;
     		case 12:
     			//Craps, You lose, don't point is pushed
+    			JOptionPane.showMessageDialog(null, "Craps, point loses, don't point is pushed!");
+    			push = true; //don't point doesn't win
+    			pointLoses();
     			break;
     		case 7:
     		case 11:
-    			//Naturual, You win
+    			//Natural, point wins
+    			JOptionPane.showMessageDialog(null, "Natural, point wins!");
+    			pointWins();
     			break;
     		default:
     			//point is established
-    			//display message that point is established
-    			//call playPoint()
+    			point = getTotalRoll();
+    			JOptionPane.showMessageDialog(null, "You rolled point: " + point);
+    			playPoint();
     			break;    				
     	}
     }
@@ -82,44 +145,51 @@ public class CrapsGame extends JPanel{
     public void playPoint(){
     	boolean playGame = true;
     	do{
-    		//roll for point
-    		//if roll is equal to point - playGame = false - call pointWins()
-    		//else if roll is equal to 7 point loses - playGame = false - call pointLoses()
-    		//else do nothing(play again)
-    	}while(playGame = true);
+    		//TODO add a panel to the below showMessageDialog with the point included
+    		JOptionPane.showMessageDialog(null, "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll());
+        	
+    		if(getTotalRoll()==point){
+    			JOptionPane.showMessageDialog(null, "Point wins");
+    			playGame = false;
+    			pointWins();
+    		}else if(getTotalRoll() == 7){
+    			JOptionPane.showMessageDialog(null, "Don't point wins");
+    			playGame = false;
+    			pointLoses();
+    		}else{
+    			JOptionPane.showMessageDialog(null, "No luck this time, roll again");
+    			
+    		}
+    	}while(playGame == true);
     } 
-    	
+    //TODO add dontpoint values to house where appropriate (don't point can now place bets)	
     public void pointLoses(){
-    	//if push is true
-    	//point loses, don't point is pushed
-    	//else
-    	//point loses, don't point wins
-    	
-    	//game ends - gameOver()
+    	if(push == true){
+    		house += pointBet;
+    		//point loses, don't point is pushed
+    	}else{
+    		//point loses, don't point wins
+    	}
     }
     
-    public void pointWins(){ 
-    	//point wins, don't point loses
-    	
-    	//game ends - gameOver()    	
-    }
-    
-    public void gameOver(){
-    	//ask if player wants to play again
-    	//call takeBets()
+    public void pointWins(){
+    	money += pointBet*2;
+    	lbl_money.setText(""+money);
+    	//point wins, don't point loses    	
     }
     
     public int getD1(){
-    	currd1 = d1.getRoll();
-    	return currd1;
+    	d1.rollDice();
+    	return d1.getRoll();
     }
     
     public int getD2(){
-    	currd2 = d2.getRoll();
-    	return currd2;
+    	d2.rollDice();
+    	return d2.getRoll();
     }
     
     public int getTotalRoll(){
-    	return currd1+currd2;
+    	int thisRoll = d1.getRoll()+d2.getRoll();
+    	return thisRoll;
     } 
 }

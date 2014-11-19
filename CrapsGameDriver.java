@@ -7,13 +7,6 @@ public class CrapsGameDriver extends JFrame{
 	public static void main(String[] args){
 		CrapsGameDriver cgd = new CrapsGameDriver();		
 		cgd.setVisible(true);
-		//CrapsGame craps = new CrapsGame();
-		//craps.takeBets();
-		//craps.makePoint(); 
-		//craps.rollPoint() while loop, continue looping until outcome
-		//System.out.println(craps.getD1());
-		//System.out.println(craps.getD2());
-		//System.out.println(craps.getTotalRoll());
 	}
 	
 	public CrapsGameDriver(){
