@@ -7,9 +7,6 @@ public class CrapsGame extends JPanel{
 	Dice d1;
 	Dice d2;
 	
-	int currd1;
-	int currd2;
-	
 	float pointBet;				//Bets on point
 	float dontpointBet;			//Bets on don't point
 	float house;				//Casino's earnings on player loses
@@ -17,10 +14,13 @@ public class CrapsGame extends JPanel{
 	int point;					//current point
 	boolean push;
 	float money;
+	
 	JLabel lbl_money;
 	JTextField txtfld_betPoint;
 	JTextField txtfld_betDontPoint;
 	JButton rollPoint;
+	
+	JPanel gamePanel;
 	
 	String message;
 
@@ -46,9 +46,9 @@ public class CrapsGame extends JPanel{
     			takeBets();
     		}
     	});
-    	crapsPane.add(rollPoint);
     	
-    	add(crapsPane);    	     
+    	crapsPane.add(rollPoint);    	
+    	add(crapsPane);    	
     }
     
     public void takeBets(){
@@ -112,6 +112,16 @@ public class CrapsGame extends JPanel{
     public void makePoint(){
     	JOptionPane.showMessageDialog(null, "Rolling for point");
     	//TODO add images of dice and message in following showMessageDialog to a panel, add panel to JOptionPane
+    	int roll1 = getD1();
+    	int roll2 = getD2();
+    	int total = getTotalRoll();
+    	
+    	gamePanel = new JPanel();
+    	gamePanel.setPreferredSize(new Dimension(300,200));
+    	FlowLayout flow = new FlowLayout();
+		gamePanel.setLayout(flow);		
+		
+    	
     	JOptionPane.showMessageDialog(null, "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll());
     	switch(getTotalRoll()){
     		case 2:
@@ -161,21 +171,27 @@ public class CrapsGame extends JPanel{
     			
     		}
     	}while(playGame == true);
-    } 
-    //TODO add dontpoint values to house where appropriate (don't point can now place bets)	
+    } 	
     public void pointLoses(){
     	if(push == true){
-    		house += pointBet;
     		//point loses, don't point is pushed
+    		house += pointBet;
+    		money += dontpointBet;
+    		lbl_money.setText(""+money);
     	}else{
     		//point loses, don't point wins
+    		house += pointBet;
+    		house -= dontpointBet*2;
+    		money += dontpointBet*2;
+    		lbl_money.setText(""+money);
     	}
     }
     
     public void pointWins(){
+    	house -= pointBet*2;
     	money += pointBet*2;
     	lbl_money.setText(""+money);
-    	//point wins, don't point loses    	
+    	house += dontpointBet;   	
     }
     
     public int getD1(){
