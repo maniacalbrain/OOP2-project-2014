@@ -4,8 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class CrapsGame extends JPanel{
-	Dice d1;
-	Dice d2;
+	static Dice d1;
+	static Dice d2;
+	
+	int roll1;
+	int roll2;
 	
 	float pointBet;				//Bets on point
 	float dontpointBet;			//Bets on don't point
@@ -20,9 +23,9 @@ public class CrapsGame extends JPanel{
 	JTextField txtfld_betDontPoint;
 	JButton rollPoint;
 	
-	JPanel gamePanel;
-	
+	JPanel gamePanel;	
 	String message;
+	JLabel message_lbl;
 
     public CrapsGame() {
     	d1 = new Dice();
@@ -74,8 +77,8 @@ public class CrapsGame extends JPanel{
     			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
     			txtfld_betPoint.setText("");
     		}
-    		if(pointBet <0){
-    			JOptionPane.showMessageDialog(null, "Negative numbers are not allowed");
+    		if(pointBet <=0){
+    			JOptionPane.showMessageDialog(null, "Must bet more than 0");
     			txtfld_betPoint.setText("");
     		}
     		else{
@@ -92,8 +95,8 @@ public class CrapsGame extends JPanel{
     			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
     			txtfld_betDontPoint.setText("");
     		}
-    		if(dontpointBet <0){
-    			JOptionPane.showMessageDialog(null, "Negative numbers are not allowed");
+    		if(dontpointBet <=0){
+    			JOptionPane.showMessageDialog(null, "Must bet more than 0");
     			txtfld_betDontPoint.setText("");
     		}
     		else{
@@ -112,17 +115,24 @@ public class CrapsGame extends JPanel{
     public void makePoint(){
     	JOptionPane.showMessageDialog(null, "Rolling for point");
     	//TODO add images of dice and message in following showMessageDialog to a panel, add panel to JOptionPane
-    	int roll1 = getD1();
-    	int roll2 = getD2();
+    	roll1 = getD1();
+    	roll2 = getD2();
     	int total = getTotalRoll();
     	
-    	gamePanel = new JPanel();
-    	gamePanel.setPreferredSize(new Dimension(300,200));
-    	FlowLayout flow = new FlowLayout();
-		gamePanel.setLayout(flow);		
-		
+    	gamePanel = new JPanel(new BorderLayout());
+    	gamePanel.setPreferredSize(new Dimension(100,60));    	
+    	message = "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll();
+    	message_lbl = new JLabel(message);
+    	message_lbl.setHorizontalAlignment(SwingConstants.CENTER);
+    	gamePanel.add(message_lbl, BorderLayout.NORTH);    	
     	
-    	JOptionPane.showMessageDialog(null, "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll());
+    	DicePanel dp = new DicePanel();
+    	dp.setPreferredSize(new Dimension(80, 30));
+    	dp.setAlignmentY(Component.CENTER_ALIGNMENT);//TODO NOT Working
+    	
+    	gamePanel.add(dp, BorderLayout.SOUTH);
+    	
+    	JOptionPane.showMessageDialog(null, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE );
     	switch(getTotalRoll()){
     		case 2:
     		case 3:
@@ -208,4 +218,15 @@ public class CrapsGame extends JPanel{
     	int thisRoll = d1.getRoll()+d2.getRoll();
     	return thisRoll;
     } 
+}
+
+class DicePanel extends JPanel{
+	public void paintComponent(Graphics g){		
+		
+		Image icon = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d1.getRoll()+".png").getImage();
+		Image icon2 = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d2.getRoll()+".png").getImage();
+		
+		g.drawImage(icon, 15, 0, 20, 20, this);
+		g.drawImage(icon2, 45, 0, 20, 20, this);
+	}
 }
