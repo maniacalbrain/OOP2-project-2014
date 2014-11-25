@@ -32,7 +32,6 @@ public class CrapsGame extends JPanel{
     	d2 = new Dice();
     	JPanel crapsPane = new JPanel(new GridLayout(0,2)); //TODO Sort out layout!!
     	
-    	//TODO add label next to money which flashes up how much money is added/subtracted?
     	money = 100;
     	lbl_money = new JLabel(""+money);
     	crapsPane.add(lbl_money);
@@ -114,13 +113,10 @@ public class CrapsGame extends JPanel{
     
     public void makePoint(){
     	JOptionPane.showMessageDialog(null, "Rolling for point");
-    	//TODO add images of dice and message in following showMessageDialog to a panel, add panel to JOptionPane
     	roll1 = getD1();
     	roll2 = getD2();
-    	int total = getTotalRoll();
     	
-    	gamePanel = new JPanel(new BorderLayout());
-    	gamePanel.setPreferredSize(new Dimension(100,60));    	
+    	gamePanel = new JPanel(new BorderLayout());    	
     	message = "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll();
     	message_lbl = new JLabel(message);
     	message_lbl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -128,7 +124,6 @@ public class CrapsGame extends JPanel{
     	
     	DicePanel dp = new DicePanel();
     	dp.setPreferredSize(new Dimension(80, 30));
-    	dp.setAlignmentY(Component.CENTER_ALIGNMENT);//TODO NOT Working
     	
     	gamePanel.add(dp, BorderLayout.SOUTH);
     	
@@ -165,8 +160,18 @@ public class CrapsGame extends JPanel{
     public void playPoint(){
     	boolean playGame = true;
     	do{
-    		//TODO add a panel to the below showMessageDialog with the point included
-    		JOptionPane.showMessageDialog(null, "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll());
+    		gamePanel = new JPanel(new BorderLayout());    	
+        	message = "You rolled: " + getD1() + " & " + getD2() +" = " + getTotalRoll();
+        	message_lbl = new JLabel(message);
+        	message_lbl.setHorizontalAlignment(SwingConstants.CENTER);
+        	gamePanel.add(message_lbl, BorderLayout.NORTH);    	
+        	
+        	DicePanel dp = new DicePanel();
+        	dp.setPreferredSize(new Dimension(80, 30));
+        	
+        	gamePanel.add(dp, BorderLayout.SOUTH);
+    		
+    		JOptionPane.showMessageDialog(null, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE);
         	
     		if(getTotalRoll()==point){
     			JOptionPane.showMessageDialog(null, "Point wins");
@@ -224,9 +229,11 @@ class DicePanel extends JPanel{
 	public void paintComponent(Graphics g){		
 		
 		Image icon = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d1.getRoll()+".png").getImage();
+		//Image icon = new ImageIcon("die"+CrapsGame.d1.getRoll()+".png").getImage();
 		Image icon2 = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d2.getRoll()+".png").getImage();
 		
-		g.drawImage(icon, 15, 0, 20, 20, this);
-		g.drawImage(icon2, 45, 0, 20, 20, this);
+		//width of JOptionPane is 242.
+		g.drawImage(icon, 96, 0, 20, 20, this);
+		g.drawImage(icon2, 126, 0, 20, 20, this);
 	}
 }
