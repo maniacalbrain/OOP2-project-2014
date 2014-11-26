@@ -1,7 +1,7 @@
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 
 public class CrapsGame extends JPanel{
 	static Dice d1;
@@ -18,8 +18,12 @@ public class CrapsGame extends JPanel{
 	boolean push;
 	float money;
 	
+	DecimalFormat df = new DecimalFormat("#0.##");
+	
 	JLabel lbl_money;
+	JLabel lbl_betPoint;
 	JTextField txtfld_betPoint;
+	JLabel lbl_betDontPoint;
 	JTextField txtfld_betDontPoint;
 	JButton rollPoint;
 	
@@ -30,16 +34,27 @@ public class CrapsGame extends JPanel{
     public CrapsGame() {
     	d1 = new Dice();
     	d2 = new Dice();
+    	JPanel mainFrame = new JPanel(new BorderLayout());
     	JPanel crapsPane = new JPanel(new GridLayout(0,2)); //TODO Sort out layout!!
+    	JPanel buttonPane = new JPanel(new FlowLayout());
     	
     	money = 100;
-    	lbl_money = new JLabel(""+money);
+    	lbl_money = new JLabel("Money: " + df.format(money));
     	crapsPane.add(lbl_money);
+    	
+    	crapsPane.add(new JLabel()); //forces a blank cell
+    	
+    	
+    	lbl_betPoint = new JLabel("Point");
+    	crapsPane.add(lbl_betPoint);
     	
     	txtfld_betPoint = new JTextField(5);
     	crapsPane.add(txtfld_betPoint);
     	
-    	txtfld_betDontPoint = new JTextField("Don't Point", 5);
+    	lbl_betDontPoint = new JLabel("Don't Point");
+    	crapsPane.add(lbl_betDontPoint);
+    	
+    	txtfld_betDontPoint = new JTextField();
     	crapsPane.add(txtfld_betDontPoint);
     	
     	rollPoint = new JButton("Roll for Point");
@@ -49,8 +64,11 @@ public class CrapsGame extends JPanel{
     		}
     	});
     	
-    	crapsPane.add(rollPoint);    	
-    	add(crapsPane);    	
+    	buttonPane.add(rollPoint);    	
+    	mainFrame.add(crapsPane, BorderLayout.CENTER);
+    	mainFrame.add(buttonPane, BorderLayout.SOUTH);
+    	
+    	add(mainFrame);   	
     }
     
     public void takeBets(){
@@ -59,13 +77,13 @@ public class CrapsGame extends JPanel{
     	
     	//if both fields are empty
     	if(txtfld_betPoint.getText().length() != 0 & txtfld_betDontPoint.getText().length() !=0){
-    		JOptionPane.showMessageDialog(null, "You can not bet on both point and don't point!");
+    		JOptionPane.showMessageDialog(this, "You can not bet on both point and don't point!");
     		txtfld_betPoint.setText("");
     		txtfld_betDontPoint.setText("");
     	}
     	//if both fields are 0
     	else if(txtfld_betPoint.getText() == "0" && txtfld_betDontPoint.getText() == "0"){
-    		JOptionPane.showMessageDialog(null, "You must place a bet greater than 0 on point or don't point to play");
+    		JOptionPane.showMessageDialog(this, "You must place a bet greater than 0 on point or don't point to play");
     	}
     	
     	//if betPoint contains a value and betdontPoint is empty or 0
@@ -73,16 +91,20 @@ public class CrapsGame extends JPanel{
     		try{
     			pointBet = Float.parseFloat(txtfld_betPoint.getText()); //
     		}catch(NumberFormatException nfe){
-    			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
+    			JOptionPane.showMessageDialog(this, "Please included only digits in your bet");
     			txtfld_betPoint.setText("");
     		}
     		if(pointBet <=0){
-    			JOptionPane.showMessageDialog(null, "Must bet more than 0");
+    			JOptionPane.showMessageDialog(this, "Must bet more than 0");
+    			txtfld_betPoint.setText("");
+    		}
+    		else if(pointBet > money){
+    			JOptionPane.showMessageDialog(this, "Can't bet more money than you have!");
     			txtfld_betPoint.setText("");
     		}
     		else{
     			money -= pointBet;
-    			lbl_money.setText("" + money);
+    			lbl_money.setText("Money: " + df.format(money));
     			makePoint();
     		}
     	}
@@ -91,28 +113,32 @@ public class CrapsGame extends JPanel{
     		try{
     			dontpointBet = Float.parseFloat(txtfld_betDontPoint.getText()); //    			
     		}catch(NumberFormatException nfe){
-    			JOptionPane.showMessageDialog(null, "Please included only digits in your bet");
+    			JOptionPane.showMessageDialog(this, "Please included only digits in your bet");
     			txtfld_betDontPoint.setText("");
     		}
     		if(dontpointBet <=0){
-    			JOptionPane.showMessageDialog(null, "Must bet more than 0");
+    			JOptionPane.showMessageDialog(this, "Must bet more than 0");
+    			txtfld_betDontPoint.setText("");
+    		}
+    		else if(dontpointBet > money){
+    			JOptionPane.showMessageDialog(this, "Can't bet more money than you have!");
     			txtfld_betDontPoint.setText("");
     		}
     		else{
     			money -= dontpointBet;
-    			lbl_money.setText("" + money);
+    			lbl_money.setText("Money: " + df.format(money));
     			makePoint();
     		}
     	}
     	
     	//else something I didn't plan for went wrong!
     	else{
-    		JOptionPane.showMessageDialog(null, "Something I didn't plan for went wrong!");
+    		JOptionPane.showMessageDialog(this, "Something I didn't plan for went wrong!");
     	}
     }    
     
     public void makePoint(){
-    	JOptionPane.showMessageDialog(null, "Rolling for point");
+    	JOptionPane.showMessageDialog(this, "Rolling for point");
     	roll1 = getD1();
     	roll2 = getD2();
     	
@@ -127,18 +153,18 @@ public class CrapsGame extends JPanel{
     	
     	gamePanel.add(dp, BorderLayout.SOUTH);
     	
-    	JOptionPane.showMessageDialog(null, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE );
+    	JOptionPane.showMessageDialog(this, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE );
     	switch(getTotalRoll()){
     		case 2:
     		case 3:
     			//Craps, You lose, don't point wins
-    			JOptionPane.showMessageDialog(null, "Craps, point loses!");
+    			JOptionPane.showMessageDialog(this, "Craps, point loses!");
     			push = false; //don't point wins 
     			pointLoses();
     			break;
     		case 12:
     			//Craps, You lose, don't point is pushed
-    			JOptionPane.showMessageDialog(null, "Craps, point loses, don't point is pushed!");
+    			JOptionPane.showMessageDialog(this, "Craps, point loses, don't point is pushed!");
     			push = true; //don't point doesn't win
     			pointLoses();
     			break;
@@ -171,18 +197,18 @@ public class CrapsGame extends JPanel{
         	
         	gamePanel.add(dp, BorderLayout.SOUTH);
     		
-    		JOptionPane.showMessageDialog(null, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE);
+    		JOptionPane.showMessageDialog(this, gamePanel, "Your Roll", JOptionPane.PLAIN_MESSAGE);
         	
     		if(getTotalRoll()==point){
-    			JOptionPane.showMessageDialog(null, "Point wins");
+    			JOptionPane.showMessageDialog(this, "Point wins");
     			playGame = false;
     			pointWins();
     		}else if(getTotalRoll() == 7){
-    			JOptionPane.showMessageDialog(null, "Don't point wins");
+    			JOptionPane.showMessageDialog(this, "Don't point wins");
     			playGame = false;
     			pointLoses();
     		}else{
-    			JOptionPane.showMessageDialog(null, "No luck this time, roll again");
+    			JOptionPane.showMessageDialog(this, "No luck this time, roll again");
     			
     		}
     	}while(playGame == true);
@@ -192,20 +218,20 @@ public class CrapsGame extends JPanel{
     		//point loses, don't point is pushed
     		house += pointBet;
     		money += dontpointBet;
-    		lbl_money.setText(""+money);
+    		lbl_money.setText("Money: "+money);
     	}else{
     		//point loses, don't point wins
     		house += pointBet;
     		house -= dontpointBet*2;
     		money += dontpointBet*2;
-    		lbl_money.setText(""+money);
+    		lbl_money.setText("Money: "+ df.format(money));
     	}
     }
     
     public void pointWins(){
     	house -= pointBet*2;
     	money += pointBet*2;
-    	lbl_money.setText(""+money);
+    	lbl_money.setText("Money: "+ df.format(money));
     	house += dontpointBet;   	
     }
     
@@ -228,9 +254,8 @@ public class CrapsGame extends JPanel{
 class DicePanel extends JPanel{
 	public void paintComponent(Graphics g){		
 		
-		Image icon = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d1.getRoll()+".png").getImage();
-		//Image icon = new ImageIcon("die"+CrapsGame.d1.getRoll()+".png").getImage();
-		Image icon2 = new ImageIcon("C:\\Users\\maniacalbrain\\Desktop\\die"+CrapsGame.d2.getRoll()+".png").getImage();
+		Image icon = new ImageIcon("dice\\die"+CrapsGame.d1.getRoll()+".png").getImage();
+		Image icon2 = new ImageIcon("dice\\die"+CrapsGame.d2.getRoll()+".png").getImage();
 		
 		//width of JOptionPane is 242.
 		g.drawImage(icon, 96, 0, 20, 20, this);
