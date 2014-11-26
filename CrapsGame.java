@@ -85,6 +85,9 @@ public class CrapsGame extends JPanel{
     	else if(txtfld_betPoint.getText() == "0" && txtfld_betDontPoint.getText() == "0"){
     		JOptionPane.showMessageDialog(this, "You must place a bet greater than 0 on point or don't point to play");
     	}
+    	else if(txtfld_betPoint.getText().length() == 0 && txtfld_betDontPoint.getText().length()==0){
+    		JOptionPane.showMessageDialog(this, "You must place a bet!");
+    	}
     	
     	//if betPoint contains a value and betdontPoint is empty or 0
     	else if(txtfld_betPoint.getText().length() != 0 && (txtfld_betDontPoint.getText().length() == 0 || txtfld_betDontPoint.getText() =="0")){
@@ -171,13 +174,13 @@ public class CrapsGame extends JPanel{
     		case 7:
     		case 11:
     			//Natural, point wins
-    			JOptionPane.showMessageDialog(null, "Natural, point wins!");
+    			JOptionPane.showMessageDialog(this, "Natural, point wins!");
     			pointWins();
     			break;
     		default:
     			//point is established
     			point = getTotalRoll();
-    			JOptionPane.showMessageDialog(null, "You rolled point: " + point);
+    			JOptionPane.showMessageDialog(this, "You rolled point: " + point);
     			playPoint();
     			break;    				
     	}
