@@ -222,12 +222,16 @@ public class CrapsGame extends JPanel{
     		house += pointBet;
     		money += dontpointBet;
     		lbl_money.setText("Money: "+money);
+    		txtfld_betPoint.setText("");
+    		txtfld_betDontPoint.setText("");
     	}else{
     		//point loses, don't point wins
     		house += pointBet;
     		house -= dontpointBet*2;
     		money += dontpointBet*2;
     		lbl_money.setText("Money: "+ df.format(money));
+    		txtfld_betPoint.setText("");
+    		txtfld_betDontPoint.setText("");
     	}
     }
     
