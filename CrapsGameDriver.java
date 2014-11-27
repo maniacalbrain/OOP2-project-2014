@@ -19,6 +19,8 @@ public class CrapsGameDriver extends JFrame{
 	private CardLayout cardLayout;
 	private JPanel panel;
 	private JPanel loginPanel;
+	private JPanel loginPage;
+	private JPanel signupPage;
 	private JPanel profilePanel;
 	private JPanel rulesPanel;
 	private JLabel header;
@@ -36,21 +38,27 @@ public class CrapsGameDriver extends JFrame{
 		setResizable(false);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(((screenSize.width/2)-(frameWidth/2)), ((screenSize.height/2)-(frameHeight/2)));
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);		
+
+
 		//Get a reference to the ContentPane
 		Container cont = getContentPane();
 		//Create a panel to hold all of the cards
 		mainDriverPanel = new JPanel(new CardLayout());
 		//Create a reference to the cardlayout
 		cardLayout = (CardLayout)(mainDriverPanel.getLayout());
-		
+				
 		//create and display login panel
 		loginPanel = createLoginPanel();
 		mainDriverPanel.add(loginPanel, "Login");
-		cardLayout.show(mainDriverPanel, "Login");
+		cardLayout.show(mainDriverPanel, "Login");	
 		
 		//TODO creat login and sign up cards
+		loginPage = createLogin();
+		mainDriverPanel.add(loginPage, "Login Page");	
+		
+		signupPage = createSignup();
+		mainDriverPanel.add(signupPage, "Signup Page");
 		
 		//Create and set menubar
 		menuBar = new JMenuBar();
@@ -97,12 +105,26 @@ public class CrapsGameDriver extends JFrame{
 		
 		//Add the mainPanel to the ContentPane reference
 		cont.add(mainDriverPanel);
+		
 	}
 	
 	public JPanel createLoginPanel(){
 		panel = new JPanel(new GridLayout(0,1));
-		panel.add(new JButton("Login"));
-		panel.add(new JButton("Sign up"));
+		JButton login = new JButton("Login");
+		login.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				cardLayout.show(mainDriverPanel, "Login Page");
+			}
+		});
+		panel.add(login);
+		
+		JButton signup = new JButton("Sign Up");
+		signup.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				cardLayout.show(mainDriverPanel, "Signup Page");
+			}
+		});
+		panel.add(signup);
 		return panel;
 	}
 	
@@ -127,6 +149,18 @@ public class CrapsGameDriver extends JFrame{
 		panel.add(new JLabel(" again and point wins, roll a 7 and don't point wins."));
 		return panel;
 		
+	}
+	
+	public JPanel createLogin(){
+		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel.add(new JLabel("This is login"));
+		return panel;
+	}
+	
+	public JPanel createSignup(){
+		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel.add(new JLabel("Signup, Signup!!!"));
+		return panel;
 	}
 	
 	//ActionListener called for any Menu Item click bar Quit
