@@ -30,21 +30,23 @@ public class CrapsGame extends JPanel{
 	JPanel gamePanel;	
 	String message;
 	JLabel message_lbl;
+	Player player;
 
-    public CrapsGame() {
+    public CrapsGame(Player player) {
+    	this.player = player;
     	d1 = new Dice();
     	d2 = new Dice();
     	JPanel mainFrame = new JPanel(new BorderLayout());
     	JPanel crapsPane = new JPanel(new GridLayout(0,2)); //TODO Sort out layout!!
     	JPanel buttonPane = new JPanel(new FlowLayout());
     	
-    	money = 100;
+    	money = player.getMoney();
+    	//TODO sort out name
+    	JLabel name = new JLabel(player.getUsername());
+    	crapsPane.add(name);
     	lbl_money = new JLabel("Money: " + df.format(money));
     	crapsPane.add(lbl_money);
-    	
-    	crapsPane.add(new JLabel()); //forces a blank cell
-    	
-    	
+    	    	
     	lbl_betPoint = new JLabel("Point");
     	crapsPane.add(lbl_betPoint);
     	

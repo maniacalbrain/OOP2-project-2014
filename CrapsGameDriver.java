@@ -25,6 +25,9 @@ public class CrapsGameDriver extends JFrame{
 	private JPanel rulesPanel;
 	private JLabel header;
 	
+	Player player = null;
+	CrapsGame cg;
+	
 	
 	public static void main(String[] args){
 		CrapsGameDriver cgd = new CrapsGameDriver();	
@@ -97,11 +100,7 @@ public class CrapsGameDriver extends JFrame{
 		rulesMenu.add(rulesMenuItem);
 		
 		//Create a new Craps Game and add to mainPanel
-		CrapsGame cg = new CrapsGame();
-		mainDriverPanel.add(cg, "New Game");
 		
-		//Add New Game to the Panel when the panel is first created
-		//TODO cardLayout.show(mainDriverPanel, "New Game");
 		
 		//Add the mainPanel to the ContentPane reference
 		cont.add(mainDriverPanel);
@@ -130,8 +129,18 @@ public class CrapsGameDriver extends JFrame{
 	
 	//method for creating the Profile Panel
 	public JPanel createProfile(){
-		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		panel.add(new JLabel("Hello"));
+		panel = new JPanel();
+		//TODO what to do in the event profile is selected wit
+		
+		JLabel lbl_profile = new JLabel("Username");
+		JLabel lbl_profile_username = new JLabel(player.getUsername());
+		JLabel lbl_profile2 = new JLabel("Money");
+		JLabel lbl_profile_money = new JLabel(""+player.getMoney());
+		panel.add(lbl_profile);
+		panel.add(lbl_profile_username);
+		panel.add(lbl_profile2);
+		panel.add(lbl_profile_money);
+		
 		return panel;
 	}
 	
@@ -153,20 +162,47 @@ public class CrapsGameDriver extends JFrame{
 	
 	public JPanel createLogin(){
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		panel.add(new JLabel("This is login"));
+		JLabel lbl_login = new JLabel("Login");
+		JTextField txtfld_login = new JTextField(20);
+		JButton btn_login = new JButton("Login");
+		btn_login.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				
+			}
+		});
+		panel.add(lbl_login);
+		panel.add(txtfld_login);
+		panel.add(btn_login);
 		return panel;
 	}
 	
 	public JPanel createSignup(){
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		panel.add(new JLabel("Signup, Signup!!!"));
+		JLabel lbl_signup = new JLabel ("Username");
+		JTextField txtfld_signup = new JTextField(20);
+		JButton btn_signup = new JButton("Signup");
+		btn_signup.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				player = new Player(txtfld_signup.getText());
+				cg = new CrapsGame(player);
+				mainDriverPanel.add(cg, "New Game");
+				cardLayout.show(mainDriverPanel, "New Game");
+			}
+		});
+		panel.add(lbl_signup);
+		panel.add(txtfld_signup);
+		panel.add(btn_signup);
 		return panel;
 	}
 	
 	//ActionListener called for any Menu Item click bar Quit
 	class MenuClicked implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			//if e.getActionCommand == "New Game" and Player is null - must have a player 
+			//If the user tries to start a new game before logining prompt the user to login
+			if (e.getActionCommand() == "New Game" && player == null){
+				JOptionPane.showMessageDialog(null, "Must login first");
+				cardLayout.show(mainDriverPanel, "Login");
+			}else
 			cardLayout.show(mainDriverPanel, e.getActionCommand());
 		}
 	}
