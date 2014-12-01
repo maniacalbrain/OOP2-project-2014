@@ -1,30 +1,8 @@
-import java.awt.CardLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 
 public class CrapsGameDriver extends JFrame{
@@ -68,20 +46,48 @@ public class CrapsGameDriver extends JFrame{
 		setResizable(false);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(((screenSize.width/2)-(frameWidth/2)), ((screenSize.height/2)-(frameHeight/2)));
-		//TODO change to asking if the user wishes to exit
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		WindowListener exitListener = new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	Object[] options = {"Yes", "No"};
+    			int n = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?",
+    					"Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+    			if(n == 0){
+    				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("players")))){
+    					oos.writeObject(playerArray);
+    					
+    				} catch (FileNotFoundException e1) {
+    					// Auto-generated catch block
+    					e1.printStackTrace();
+    				} catch (IOException e2) {
+    					// Auto-generated catch block
+    					e2.printStackTrace();
+    				}
+
+    				System.exit(0);
+    			}else{
+    				
+    			}
+            }
+        };
+        addWindowListener(exitListener);
+		
+		
+		
 		
 		//load up the players
 		try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("players")))){
 			playerArray = (ArrayList) ois.readObject();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			//Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			//Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			//Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -93,15 +99,16 @@ public class CrapsGameDriver extends JFrame{
 		//Create a reference to the cardlayout
 		cardLayout = (CardLayout)(mainDriverPanel.getLayout());
 				
-		//create and display login panel
+		//create and display login panel. This will be the first panel the user sees
 		loginPanel = createLoginPanel();
 		mainDriverPanel.add(loginPanel, "Login");
 		cardLayout.show(mainDriverPanel, "Login");	
 		
-		//TODO creat login and sign up cards
+		//Create and add the login page
 		loginPage = createLogin();
-		mainDriverPanel.add(loginPage, "Login Page");	
+		mainDriverPanel.add(loginPage, "Login Page");
 		
+		//Create and add the signup page
 		signupPage = createSignup();
 		mainDriverPanel.add(signupPage, "Signup Page");
 		
@@ -216,9 +223,15 @@ public class CrapsGameDriver extends JFrame{
 					}
 				}
 				if (player == null){
-					//TODO change to option dialog, login or signup
-					JOptionPane.showMessageDialog(null, "That player does not exist, please sign up or use a different name");
-					cardLayout.show(mainDriverPanel, "Login");
+					//TODO reference http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+					Object[] options = {"Try again", "Signup"};
+					int n = JOptionPane.showOptionDialog(null, "That player does not exist, please sign up or use a different name",
+							"Error", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+					if(n == 0){
+						cardLayout.show(mainDriverPanel, "Login Page");
+					}else{
+						cardLayout.show(mainDriverPanel, "Signup Page");
+					}					
 				}
 			}
 		});
@@ -276,23 +289,26 @@ public class CrapsGameDriver extends JFrame{
 	//ActionListener called for the Quit menu Item
 	class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			//TODO change to confirm Dialog
-			JOptionPane.showMessageDialog(null, "Are you sure you want to quit?");
-			
-			//if yes show message "Saving"
-			
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("players")))){
-				oos.writeObject(playerArray);
-				
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
+			//TODO reference http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+			Object[] options = {"Yes", "No"};
+			int n = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?",
+					"Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+			if(n == 0){
+				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("players")))){
+					oos.writeObject(playerArray);
+					
+				} catch (FileNotFoundException e1) {
+					// Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e2) {
+					// Auto-generated catch block
+					e2.printStackTrace();
+				}
 
-			System.exit(0);
+				System.exit(0);
+			}else{
+				
+			}
 		}
 	}
 

@@ -3,6 +3,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
 
+/**
+ * CrapsGame Object
+ * 
+ * @author James Nagle<maniacalcorp@gmail.com>
+ *
+ */
 public class CrapsGame extends JPanel{
 	/**
 	 * 
