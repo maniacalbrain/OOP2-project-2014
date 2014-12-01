@@ -1,11 +1,37 @@
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.CardLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 
 public class CrapsGameDriver extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int frameWidth = 310;
 	private static final int frameHeight = 200;
 	private JMenuBar menuBar;
@@ -25,6 +51,7 @@ public class CrapsGameDriver extends JFrame{
 	private JPanel rulesPanel;
 	private JLabel header;
 	
+	ArrayList<Player> playerArray = new ArrayList<Player>();
 	Player player = null;
 	CrapsGame cg;
 	
@@ -41,7 +68,22 @@ public class CrapsGameDriver extends JFrame{
 		setResizable(false);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(((screenSize.width/2)-(frameWidth/2)), ((screenSize.height/2)-(frameHeight/2)));
-		setDefaultCloseOperation(EXIT_ON_CLOSE);		
+		//TODO change to asking if the user wishes to exit
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//load up the players
+		try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("players")))){
+			playerArray = (ArrayList) ois.readObject();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 		//Get a reference to the ContentPane
@@ -79,8 +121,6 @@ public class CrapsGameDriver extends JFrame{
 		//Create the Profile Item, profile panel and add it to the cardlayout
 		profileMenuItem = new JMenuItem("Profile");
 		profileMenuItem.addActionListener(new MenuClicked());
-		profilePanel = createProfile();
-		mainDriverPanel.add(profilePanel, "Profile");
 		fileMenu.add(profileMenuItem);
 		
 		//Create the Quit Item
@@ -107,6 +147,7 @@ public class CrapsGameDriver extends JFrame{
 		
 	}
 	
+	//Creating LoginPanel, first panel shown to the user
 	public JPanel createLoginPanel(){
 		panel = new JPanel(new GridLayout(0,1));
 		JButton login = new JButton("Login");
@@ -130,17 +171,15 @@ public class CrapsGameDriver extends JFrame{
 	//method for creating the Profile Panel
 	public JPanel createProfile(){
 		panel = new JPanel();
-		//TODO what to do in the event profile is selected wit
-		
-		JLabel lbl_profile = new JLabel("Username");
-		JLabel lbl_profile_username = new JLabel(player.getUsername());
-		JLabel lbl_profile2 = new JLabel("Money");
-		JLabel lbl_profile_money = new JLabel(""+player.getMoney());
-		panel.add(lbl_profile);
-		panel.add(lbl_profile_username);
-		panel.add(lbl_profile2);
-		panel.add(lbl_profile_money);
-		
+					
+			JLabel lbl_profile = new JLabel("Username");
+			JLabel lbl_profile_username = new JLabel(player.getUsername());
+			JLabel lbl_profile2 = new JLabel("Money");
+			JLabel lbl_profile_money = new JLabel(""+player.getMoney());
+			panel.add(lbl_profile);
+			panel.add(lbl_profile_username);
+			panel.add(lbl_profile2);
+			panel.add(lbl_profile_money);			
 		return panel;
 	}
 	
@@ -167,7 +206,20 @@ public class CrapsGameDriver extends JFrame{
 		JButton btn_login = new JButton("Login");
 		btn_login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				for(Player plr : playerArray){
+					if(plr.getUsername().equals(txtfld_login.getText())){
+						player = plr;
+						cg = new CrapsGame(player);
+						mainDriverPanel.add(cg, "New Game");
+						cardLayout.show(mainDriverPanel, "New Game");
+						break;
+					}
+				}
+				if (player == null){
+					//TODO change to option dialog, login or signup
+					JOptionPane.showMessageDialog(null, "That player does not exist, please sign up or use a different name");
+					cardLayout.show(mainDriverPanel, "Login");
+				}
 			}
 		});
 		panel.add(lbl_login);
@@ -183,7 +235,9 @@ public class CrapsGameDriver extends JFrame{
 		JButton btn_signup = new JButton("Signup");
 		btn_signup.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				
 				player = new Player(txtfld_signup.getText());
+				playerArray.add(player);
 				cg = new CrapsGame(player);
 				mainDriverPanel.add(cg, "New Game");
 				cardLayout.show(mainDriverPanel, "New Game");
@@ -202,7 +256,19 @@ public class CrapsGameDriver extends JFrame{
 			if (e.getActionCommand() == "New Game" && player == null){
 				JOptionPane.showMessageDialog(null, "Must login first");
 				cardLayout.show(mainDriverPanel, "Login");
-			}else
+			}
+			//If the user tries to view profile before logining in prompt the user to login in
+			else if (e.getActionCommand() == "Profile" && player == null){
+				JOptionPane.showMessageDialog(null, "Must login first");
+				cardLayout.show(mainDriverPanel, "Login");
+			}
+			//If the user tries to view profile after logging in create that profile and display it to them
+			else if (e.getActionCommand() == "Profile" && player != null){
+				profilePanel = createProfile();
+				mainDriverPanel.add(profilePanel, "Profile");
+				cardLayout.show(mainDriverPanel, "Profile");
+			}			
+			else
 			cardLayout.show(mainDriverPanel, e.getActionCommand());
 		}
 	}
@@ -210,7 +276,23 @@ public class CrapsGameDriver extends JFrame{
 	//ActionListener called for the Quit menu Item
 	class QuitListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
+			//TODO change to confirm Dialog
 			JOptionPane.showMessageDialog(null, "Are you sure you want to quit?");
+			
+			//if yes show message "Saving"
+			
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("players")))){
+				oos.writeObject(playerArray);
+				
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+
+			System.exit(0);
 		}
 	}
 

@@ -4,6 +4,10 @@ import java.awt.event.*;
 import java.text.DecimalFormat;
 
 public class CrapsGame extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static Dice d1;
 	static Dice d2;
 	
@@ -224,6 +228,7 @@ public class CrapsGame extends JPanel{
     		house += pointBet;
     		money += dontpointBet;
     		lbl_money.setText("Money: "+money);
+    		player.setMoney(money);
     		txtfld_betPoint.setText("");
     		txtfld_betDontPoint.setText("");
     	}else{
@@ -232,6 +237,7 @@ public class CrapsGame extends JPanel{
     		house -= dontpointBet*2;
     		money += dontpointBet*2;
     		lbl_money.setText("Money: "+ df.format(money));
+    		player.setMoney(money);
     		txtfld_betPoint.setText("");
     		txtfld_betDontPoint.setText("");
     	}
@@ -241,6 +247,7 @@ public class CrapsGame extends JPanel{
     	house -= pointBet*2;
     	money += pointBet*2;
     	lbl_money.setText("Money: "+ df.format(money));
+    	player.setMoney(money);
     	house += dontpointBet;   	
     }
     
@@ -261,7 +268,14 @@ public class CrapsGame extends JPanel{
 }
 
 class DicePanel extends JPanel{
-	public void paintComponent(Graphics g){		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public void paintComponent(Graphics g){	
+		
+		//TODO Reference images https://openclipart.org/user-detail/orsonj
 		
 		Image icon = new ImageIcon("dice\\die"+CrapsGame.d1.getRoll()+".png").getImage();
 		Image icon2 = new ImageIcon("dice\\die"+CrapsGame.d2.getRoll()+".png").getImage();
