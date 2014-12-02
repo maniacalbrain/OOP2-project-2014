@@ -44,6 +44,15 @@ public class CrapsGameDriver extends JFrame{
 		setTitle("Craps Game");
 		setSize(frameWidth, frameHeight);
 		setResizable(false);
+		
+		/*************************************************
+		 * Title: How to center a JFrame on screen
+		 * Author: Alvin Alexander
+		 * Date: September 16 2013
+		 * Availability: http://alvinalexander.com/blog/post/jfc-swing/how-center-jframe-java-swing
+		 * Modified: Adapted for my project
+		 *************************************************/
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(((screenSize.width/2)-(frameWidth/2)), ((screenSize.height/2)-(frameHeight/2)));
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -94,6 +103,14 @@ public class CrapsGameDriver extends JFrame{
 
 		//Get a reference to the ContentPane
 		Container cont = getContentPane();
+		
+		/*************************************************
+		 * Title: How to Use CardLayout
+		 * Date: 2005
+		 * Availability: http://www.math.uni-hamburg.de/doc/java/tutorial/uiswing/layout/card.html
+		 * Modified: Adapted for my project
+		 *************************************************/
+		
 		//Create a panel to hold all of the cards
 		mainDriverPanel = new JPanel(new CardLayout());
 		//Create a reference to the cardlayout
@@ -212,6 +229,7 @@ public class CrapsGameDriver extends JFrame{
 		JTextField txtfld_login = new JTextField(20);
 		JButton btn_login = new JButton("Login");
 		btn_login.addActionListener(new ActionListener(){
+			//loads player details from arraylist
 			public void actionPerformed(ActionEvent e){
 				for(Player plr : playerArray){
 					if(plr.getUsername().equals(txtfld_login.getText())){
@@ -222,8 +240,17 @@ public class CrapsGameDriver extends JFrame{
 						break;
 					}
 				}
+				//if the name entered is not contained in the list output and error message and ask if the user wishes to try again or sign up
 				if (player == null){
-					//TODO reference http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+					
+					/*************************************************
+					 * Title: How to make dialogs
+					 * Author: Oracle
+					 * Date: 2014
+					 * Availability: http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+					 * Modified: Adapted for my project
+					 *************************************************/
+					
 					Object[] options = {"Try again", "Signup"};
 					int n = JOptionPane.showOptionDialog(null, "That player does not exist, please sign up or use a different name",
 							"Error", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -241,6 +268,7 @@ public class CrapsGameDriver extends JFrame{
 		return panel;
 	}
 	
+	//create signup panel
 	public JPanel createSignup(){
 		panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lbl_signup = new JLabel ("Username");
@@ -248,12 +276,25 @@ public class CrapsGameDriver extends JFrame{
 		JButton btn_signup = new JButton("Signup");
 		btn_signup.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
-				player = new Player(txtfld_signup.getText());
-				playerArray.add(player);
-				cg = new CrapsGame(player);
-				mainDriverPanel.add(cg, "New Game");
-				cardLayout.show(mainDriverPanel, "New Game");
+				//Check if the name the user is trying to use to signup is already taken
+				boolean nameTaken = false;
+				for(Player plr : playerArray){
+					if(plr.getUsername().equals(txtfld_signup.getText())){
+						nameTaken = true;
+					}
+				}
+				//if name is not taken add player to the player array and create a new game
+				if(nameTaken == false){
+					player = new Player(txtfld_signup.getText());
+					playerArray.add(player);
+					cg = new CrapsGame(player);
+					mainDriverPanel.add(cg, "New Game");
+					cardLayout.show(mainDriverPanel, "New Game");
+				}
+				//if the name has been taken prompt the user to enter a new name
+				else{
+					JOptionPane.showMessageDialog(null,"That username is already taken, please choose another");
+				}
 			}
 		});
 		panel.add(lbl_signup);
@@ -288,8 +329,7 @@ public class CrapsGameDriver extends JFrame{
 	
 	//ActionListener called for the Quit menu Item
 	class QuitListener implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			//TODO reference http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+		public void actionPerformed(ActionEvent e){			
 			Object[] options = {"Yes", "No"};
 			int n = JOptionPane.showOptionDialog(null, "Are you sure you want to quit?",
 					"Quit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -311,10 +351,4 @@ public class CrapsGameDriver extends JFrame{
 			}
 		}
 	}
-
 }
-
-//TODO Reference http://alvinalexander.com/blog/post/jfc-swing/how-center-jframe-java-swing
-//TODO Reference http://www.math.uni-hamburg.de/doc/java/tutorial/uiswing/layout/card.html
-//TODO Reference https://docs.oracle.com/javase/tutorial/uiswing/layout/visual.html
-
