@@ -279,13 +279,13 @@ public class CrapsGameDriver extends JFrame{
 				//Check if the name the user is trying to use to signup is already taken
 				boolean nameTaken = false;
 				for(Player plr : playerArray){
-					if(plr.getUsername().equals(txtfld_signup.getText())){
+					if(plr.getUsername().equals(txtfld_signup.getText().trim())){
 						nameTaken = true;
 					}
 				}
 				//if name is not taken add player to the player array and create a new game
 				if(nameTaken == false){
-					player = new Player(txtfld_signup.getText());
+					player = new Player(txtfld_signup.getText().trim());
 					playerArray.add(player);
 					cg = new CrapsGame(player);
 					mainDriverPanel.add(cg, "New Game");
